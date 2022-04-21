@@ -1,3 +1,6 @@
+import { connect } from "react-redux";
+import * as commentActions from "../../store/actions/commentActions";
+import { bindActionCreators } from "redux";
 const CommentProfile = ({
   image,
   username,
@@ -6,7 +9,16 @@ const CommentProfile = ({
   content,
   user,
   handleClick,
+  comments,
+  commentId,
+  actions,
 }: any) => {
+  const handleDelete = () => {
+    let currComment = comments.find((m: any) => {
+      return m.id == commentId;
+    });
+    actions.deleteComment(currComment);
+  };
   return (
     <>
       <div className="comment px-2 w-95">
@@ -15,7 +27,7 @@ const CommentProfile = ({
             <div>
               <img
                 alt="avatar"
-                src={image.png.substring(1)}
+                src={image && image.png.substring(1)}
                 className="avatar-sm"
               />
             </div>
@@ -26,10 +38,10 @@ const CommentProfile = ({
               <p className="color-grayish-blue">{createdAt}</p>
             </div>
           </div>
-          <div className="d-flex justify-content-end align-items-center w-50">
+          <div className="d-flex justify-content-end align-items-center w-50 hide-mobile">
             {username === currentUser && (
               <>
-                <div className="px-1 d-flex">
+                <div className="px-1 d-flex" onClick={handleDelete}>
                   <img src="images/icon-delete.svg" alt="reply" />
                   <p className="m-0 pl-1 color-red">Delete</p>
                 </div>
@@ -62,5 +74,14 @@ const CommentProfile = ({
     </>
   );
 };
-
-export default CommentProfile;
+function mapStateToProps({ comments }: any) {
+  return { comments };
+}
+function mapDispatchToProps(dispatch: any) {
+  return {
+    actions: {
+      deleteComment: bindActionCreators(commentActions.deleteComment, dispatch),
+    },
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(CommentProfile);

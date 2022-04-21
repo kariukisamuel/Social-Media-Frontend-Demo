@@ -2,6 +2,7 @@ import * as types from "./actionTypes";
 import { Dispatch } from "redux";
 import loadComments from "../../lib/load-comments";
 import saveComments from "../../lib/save-comments";
+import deleteComments from "../../lib/delete-comments";
 
 export function loadCommentsSuccess(comments: Comment) {
   return { type: types.LOAD_COMMENTS_SUCCESS, comments };
@@ -28,7 +29,7 @@ export function getComments() {
   };
 }
 
-export function saveComment(comment: Comments) {
+export function saveComment(comment: any) {
   return function (dispatch: Dispatch) {
     return saveComments(comment)
       .then((savedComment) => {
@@ -42,9 +43,9 @@ export function saveComment(comment: Comments) {
   };
 }
 
-// export function deleteCourse(course) {
-//   return function (dispatch) {
-//     dispatch(deleteCourseOptimistic(course));
-//     return courseApi.deleteCourse(course.id);
-//   };
-// }
+export function deleteComment(comment: any) {
+  return function (dispatch: Dispatch) {
+    dispatch(deleteCommentOptimistic(comment));
+    return deleteComments(comment.id);
+  };
+}

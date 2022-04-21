@@ -8,7 +8,6 @@ import { bindActionCreators } from "redux";
 import { useEffect } from "react";
 
 const Home: NextPage = ({ actions, comments, user }: any) => {
-  console.log(comments);
   useEffect(() => {
     actions.loadUser();
     actions.loadComments();

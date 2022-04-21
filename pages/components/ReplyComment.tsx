@@ -1,4 +1,5 @@
 import Comment from "./Comment";
+import AddComment from "./AddComment";
 import Votes from "./Votes";
 import CommentProfile from "./CommentProfile";
 import { connect } from "react-redux";
@@ -14,13 +15,23 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
   const [comment, setComment] = useState({ ...currComment });
   const [replyObj, setReply] = useState([...currComment.replies]);
 
+  const [openReply, setOpenReply] = useState(false);
+  const handleClick = () => {
+    setOpenReply(!openReply);
+  };
+
   const upVote = (index: number) => {
     let reply = {
       ...comment.replies[index],
       score: comment.replies[index].score++,
     };
-    setReply({ ...replyObj, [index]: reply });
-    setComment({ ...comment, replies: replyObj });
+
+    let a = comment.replies;
+    Object.assign([], a, {
+      [index]: reply,
+    });
+
+    setComment({ ...comment, replies: a });
     actions.saveComment(comment);
   };
 
@@ -35,49 +46,55 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
   };
 
   return (
-    <div className="reply w-100">
-      <div className="replies-divider ml-5 pl-5">
-        {replies.map((reply: any, index: number) => (
-          <div
-            className="comment-container p-4 mt-2 white-bg m-auto"
-            key={index}
-          >
-            <div className="d-flex">
-              <div className="w-5">
-                <div className="desktop-voting verylightgray-bg">
-                  <div className="d-flex justify-content-center">
-                    <img
-                      src="images/icon-plus.svg"
-                      alt="upvote"
-                      onClick={() => upVote(index)}
-                    />
+    <>
+      <div className="reply">
+        <div className="replies-divider ml-5 pl-5">
+          {replies.map((reply: any, index: number) => (
+            <>
+              <div
+                className="comment-container p-4 mt-2 white-bg m-auto"
+                key={index}
+              >
+                <div className="d-flex">
+                  <div className="w-5 hide-mobile">
+                    <div className="desktop-voting verylightgray-bg">
+                      <div
+                        className="d-flex justify-content-center"
+                        onClick={() => upVote(index)}
+                      >
+                        <img src="images/icon-plus.svg" alt="upvote" />
+                      </div>
+                      <div className="d-flex justify-content-center votes color-moderate-blue">
+                        <p className="font-weight-bold">
+                          {comment.replies[index].score}
+                        </p>
+                      </div>
+                      <div
+                        className="d-flex justify-content-center"
+                        onClick={() => downVote(index)}
+                      >
+                        <img src="images/icon-minus.svg" alt="downvote" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="d-flex justify-content-center votes color-moderate-blue">
-                    <p className="font-weight-bold">
-                      {comment.replies[index].score}
-                    </p>
-                  </div>
-                  <div className="d-flex justify-content-center">
-                    <img
-                      src="images/icon-minus.svg"
-                      alt="downvote"
-                      onClick={() => downVote(index)}
-                    />
-                  </div>
+                  <CommentProfile
+                    image={reply.user.image}
+                    username={reply.user.username}
+                    createdAt={reply.createdAt}
+                    currentUser={user.username}
+                    content={reply.content}
+                    handleClick={handleClick}
+                  />
                 </div>
               </div>
-              <CommentProfile
-                image={reply.user.image}
-                username={reply.user.username}
-                createdAt={reply.createdAt}
-                currentUser={user.username}
-                content={reply.content}
-              />
-            </div>
-          </div>
-        ))}
+              {user && openReply && (
+                <AddComment user={user} commentId={comment.id} />
+              )}
+            </>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 function mapStateToProps({ comments }: any) {

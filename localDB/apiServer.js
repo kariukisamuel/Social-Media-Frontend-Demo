@@ -44,26 +44,8 @@ server.use((req, res, next) => {
   next();
 });
 
-server.put("/comments/", function (req, res, next) {
-  const error = validateComment(req.body);
-  if (error) {
-    res.status(400).send(error);
-  } else {
-    next();
-  }
-});
-
 server.post("/comments/", function (req, res, next) {
   const error = validateComment(req.body);
-  if (error) {
-    res.status(400).send(error);
-  } else {
-    next();
-  }
-});
-
-server.post("/replies/", function (req, res, next) {
-  const error = validateReply(req.body);
   if (error) {
     res.status(400).send(error);
   } else {

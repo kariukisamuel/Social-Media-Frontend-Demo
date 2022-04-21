@@ -8,9 +8,8 @@ const Votes = ({ id, actions, comments }: any) => {
     return m.id == id;
   });
 
-  const [comment, setComent] = useState({ ...currComment });
+  const [comment, setComment] = useState({ ...currComment });
 
-  // console.log(comment);
   const upVote = () => {
     let newComment = { ...comment, score: comment.score++ };
     actions.saveComment(newComment);
@@ -22,7 +21,7 @@ const Votes = ({ id, actions, comments }: any) => {
   };
 
   return (
-    <div className="w-5">
+    <div className="w-5 hide-mobile">
       <div className="desktop-voting verylightgray-bg">
         <div className="d-flex justify-content-center">
           <img src="images/icon-plus.svg" alt="upvote" onClick={upVote} />

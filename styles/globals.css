@@ -809,3 +809,37 @@ textarea:hover {
 .replies-divider {
   border-left: 1px solid var(--lightgray);
 }
+.hide-desktop {
+  display: none;
+}
+@media (max-width: 700px) and (min-width: 300px) {
+  /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+
+  .container {
+    width: 100%;
+  }
+  .hide-mobile {
+    display: none;
+  }
+  .w-50 {
+    width: 100%;
+  }
+  .w-95 {
+    width: 100%;
+  }
+  .p-4 {
+    padding: 10px;
+  }
+  .pl-5 {
+    padding-left: 10px;
+  }
+  .ml-5 {
+    margin-left: 10px;
+  }
+  .comment-input-container {
+    padding: 20px;
+  }
+  .hide-desktop {
+    display: block;
+  }
+}
