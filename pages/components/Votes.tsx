@@ -23,13 +23,13 @@ const Votes = ({ id, actions, comments }: any) => {
   return (
     <div className="w-5 hide-mobile">
       <div className="desktop-voting verylightgray-bg">
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center cursor-pointer">
           <img src="images/icon-plus.svg" alt="upvote" onClick={upVote} />
         </div>
         <div className="d-flex justify-content-center votes color-moderate-blue">
-          <p className="font-weight-bold">{comment.score}</p>
+          <p className="font-weight-bold m-0">{comment.score}</p>
         </div>
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center cursor-pointer">
           <img src="images/icon-minus.svg" alt="downvote" onClick={downVote} />
         </div>
       </div>

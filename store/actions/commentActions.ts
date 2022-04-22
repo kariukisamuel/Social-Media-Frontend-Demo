@@ -34,8 +34,8 @@ export function saveComment(comment: any) {
     return saveComments(comment)
       .then((savedComment) => {
         comment.id
-          ? dispatch(updateCommentSuccess(savedComment))
-          : dispatch(createCommentSuccess(savedComment));
+          ? dispatch(updateCommentSuccess(savedComment.response))
+          : dispatch(createCommentSuccess(savedComment.response));
       })
       .catch((error) => {
         throw error;

@@ -12,6 +12,9 @@ const Home: NextPage = ({ actions, comments, user }: any) => {
     actions.loadUser();
     actions.loadComments();
   }, []);
+  useEffect(() => {
+    console.log(comments);
+  }, [comments]);
 
   return (
     <div className="container m-auto">

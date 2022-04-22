@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as commentActions from "../../store/actions/commentActions";
+import next from "next";
 
 const AddComment = ({
   user,
@@ -17,15 +18,14 @@ const AddComment = ({
   const [content, setContent] = useState({
     text: "",
   });
-  const [comment, setComment] = useState({});
-  const [reply, setReply] = useState({
-    id: 0,
-    content: "",
-    createdAt: 0,
-    score: 0,
-    user: {},
-    replyingTo: "",
-  });
+  const [saving, setSaving] = useState(false);
+  const [comment, setComment] = useState({ ...currComment });
+  useEffect(() => {
+    if (saving) {
+      console.log(comment);
+      actions.saveComment(comment);
+    }
+  }, [comment]);
 
   const getLastReplyId = (c: any) => {
     if (c.length > 0) {
@@ -37,35 +37,29 @@ const AddComment = ({
   };
 
   const handleChange = (event: any) => {
+    let currValue = event.target.value;
     setContent({
-      text: event.target.value,
+      text: currValue,
     });
   };
   const handleReplySave = () => {
-    let text = content.text;
+    let lastId = getLastReplyId(currComment.replies);
+    let nextId = lastId + 1;
 
-    let lId = getLastReplyId(currComment.replies);
-    setReply({
-      ...reply,
-      content: text,
-      user: user,
-      replyingTo: commentUser,
-      id: lId,
-      createdAt: Date.now(),
-    });
+    let newReply = [
+      {
+        content: content.text,
+        user: user,
+        replyingTo: commentUser,
+        id: nextId,
+        score: 0,
+        createdAt: Date.now(),
+      },
+    ];
 
-    let r = [];
-    r[lId] = reply;
-    let c = {
-      id: currComment.id,
-      content: currComment.content,
-      createdAt: currComment.createdAt,
-      score: currComment.score,
-      user: currComment.user,
-      replies: r,
-    };
-
-    actions.saveComment(c);
+    const updatedCarsArray = [...comment.replies, ...newReply];
+    setComment({ ...comment, replies: updatedCarsArray });
+    setSaving(true);
   };
 
   const handleCommentSave = () => {
@@ -106,38 +100,20 @@ const AddComment = ({
           <div>
             {commentId === undefined ? (
               <button
-                className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send"
+                className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send cursor-pointer"
                 onClick={handleCommentSave}
               >
                 SEND
               </button>
             ) : (
               <button
-                className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send"
+                className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send cursor-pointer"
                 onClick={handleReplySave}
               >
                 SEND
               </button>
             )}
           </div>
-        </div>
-
-        <div className="w-10">
-          {commentId === undefined ? (
-            <button
-              className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send"
-              onClick={handleCommentSave}
-            >
-              SEND
-            </button>
-          ) : (
-            <button
-              className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send"
-              onClick={handleReplySave}
-            >
-              SEND
-            </button>
-          )}
         </div>
       </div>
 
@@ -166,14 +142,14 @@ const AddComment = ({
             <>
               {commentId === undefined ? (
                 <button
-                  className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send"
+                  className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send cursor-pointer"
                   onClick={handleCommentSave}
                 >
                   SEND
                 </button>
               ) : (
                 <button
-                  className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send"
+                  className="moderate-blue-bg color-white px-2 pt-1 pb-1 btn-send cursor-pointer"
                   onClick={handleReplySave}
                 >
                   SEND

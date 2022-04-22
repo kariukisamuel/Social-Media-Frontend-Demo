@@ -1,9 +1,7 @@
-import Comment from "./Comment";
 import AddComment from "./AddComment";
-import Votes from "./Votes";
 import CommentProfile from "./CommentProfile";
 import { connect } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { bindActionCreators } from "redux";
 import * as commentActions from "../../store/actions/commentActions";
 
@@ -11,9 +9,10 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
   let currComment = comments.find((m: any) => {
     return m.id == commentId;
   });
+  useEffect(() => {}, [comments]);
+  useEffect(() => {}, [replies]);
 
   const [comment, setComment] = useState({ ...currComment });
-  const [replyObj, setReply] = useState([...currComment.replies]);
 
   const [openReply, setOpenReply] = useState(false);
   const handleClick = () => {
@@ -21,6 +20,7 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
   };
 
   const upVote = (index: number) => {
+    console.log(index);
     let reply = {
       ...comment.replies[index],
       score: comment.replies[index].score++,
@@ -38,10 +38,14 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
   const downVote = (index: number) => {
     let reply = {
       ...comment.replies[index],
-      score: comment.replies[index].score++,
+      score: comment.replies[index].score--,
     };
-    setReply({ ...replyObj, [index]: reply });
-    setComment({ ...comment, replies: replyObj });
+    let a = comment.replies;
+    Object.assign([], a, {
+      [index]: reply,
+    });
+
+    setComment({ ...comment, replies: a });
     actions.saveComment(comment);
   };
 
@@ -59,7 +63,7 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
                   <div className="w-5 hide-mobile">
                     <div className="desktop-voting verylightgray-bg">
                       <div
-                        className="d-flex justify-content-center"
+                        className="d-flex justify-content-center cursor-pointer"
                         onClick={() => upVote(index)}
                       >
                         <img src="images/icon-plus.svg" alt="upvote" />
@@ -70,7 +74,7 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
                         </p>
                       </div>
                       <div
-                        className="d-flex justify-content-center"
+                        className="d-flex justify-content-center cursor-pointer"
                         onClick={() => downVote(index)}
                       >
                         <img src="images/icon-minus.svg" alt="downvote" />
@@ -84,11 +88,17 @@ const ReplyComment = ({ commentId, replies, user, comments, actions }: any) => {
                     currentUser={user.username}
                     content={reply.content}
                     handleClick={handleClick}
+                    replyIndexMobile={index}
+                    commentId={commentId}
                   />
                 </div>
               </div>
               {user && openReply && (
-                <AddComment user={user} commentId={comment.id} />
+                <AddComment
+                  user={user}
+                  commentId={comment.id}
+                  commentUser={comment.user.username}
+                />
               )}
             </>
           ))}
